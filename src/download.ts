@@ -18,7 +18,7 @@ const setProcessed = async (db, id): Promise<any> => {
 
 const getPages = async (db, count, from?, to?): Promise<Coub[]> => {
   return new Promise((resolve, reject) => {
-    const sql = `select json from pages where json is not '' and processed = 0 ${
+    const sql = `select json from pages where json is not '' and processed = 0 and json_extract(json, '$.banned') = 0 ${
       from && to ? `and id between '${from}' and '${to}'` : ""
     } ORDER by id limit ${count}`;
     db.all(sql, function (err, res) {
