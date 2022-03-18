@@ -1,8 +1,21 @@
 let count = 0;
-
+export const retry = async (fn, times) => {
+  let i = 0
+  while(i < times) {
+    try {
+      await fn();
+      return;
+    } catch (e){
+      i++;
+      if(i === times) {
+        throw e
+      }
+    }
+  }
+}
 export const workUnit = async (id, db, length) => {
-    console.log(
-      `current: ${id} ${count++} / ${length}`
+  console.log(
+    `current: ${id} ${count++} / ${length}`
     );
     const response = await fetch(`https://coub.com/view/${id}`, {
       redirect: "manual",

@@ -1,7 +1,7 @@
 import pLimit from "p-limit";
 import sqlite3 from "sqlite3";
 import { idGenerator } from "./id-generator";
-import { workUnit } from "./work-unit";
+import { retry, workUnit } from "./work-unit";
 
 const main = async () => {
   const [, , arg1, arg2] = process.argv;
@@ -20,7 +20,7 @@ const main = async () => {
   for (let i = 0; i < end - start; i++) {
     const id = getId.next().value;
     console.log(`preparing ${i} / ${end - start}...`);
-    limit(workUnit, id, db, end - start);
+    limit(retry, () => workUnit(id, db, end - start), 2);
   }
   await Promise.all(promises);
 };
