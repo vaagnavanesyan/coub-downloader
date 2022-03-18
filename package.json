@@ -4,8 +4,9 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "start": "tsnd --respawn src/index.ts",
+    "debug": "tsnd --respawn src/index.ts",
     "start:prod": "node --experimental-fetch dist/index.js",
+    "download": "node --experimental-fetch dist/download.js",
     "build": "rimraf dist && tsc"
   },
   "dependencies": {
