@@ -11,7 +11,7 @@ const main = async () => {
   const db = new sqlite3.Database(`pages_${arg1}_${arg2}.db`);
 
   db.serialize(() =>
-    db.run("CREATE TABLE IF NOT EXISTS pages (id TEXT, json TEXT, href TEXT)")
+    db.run("CREATE TABLE IF NOT EXISTS pages (id TEXT, json TEXT, href TEXT, processed INTEGER)")
   );
 
   const limit = pLimit(16);
