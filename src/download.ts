@@ -3,6 +3,7 @@ import { Coub } from "./types";
 import { writeFile, mkdirSync, existsSync } from "fs";
 import { promisify } from "util";
 import { join } from "path";
+import { retry } from "./retry";
 const writeFilePromise = promisify(writeFile);
 
 const setProcessed = async (db, id): Promise<any> => {
@@ -63,16 +64,24 @@ const downloadCoubs = async () => {
         page.file_versions.html5.audio?.high;
       console.log(`Processing ${page.permalink}...`);
       if (audio?.url) {
-        await downloadFile(
-          audio.url,
-          join(outputPath, page.permalink),
-          "input.mp3"
+        await retry(
+          () =>
+            downloadFile(
+              audio.url,
+              join(outputPath, page.permalink),
+              "input.mp3"
+            ),
+          2
         );
       }
-      await downloadFile(
-        video.url,
-        join(outputPath, page.permalink),
-        "input.mp4"
+      await retry(
+        () =>
+          downloadFile(
+            video.url,
+            join(outputPath, page.permalink),
+            "input.mp4"
+          ),
+        2
       );
 
       await setProcessed(db, page.permalink);

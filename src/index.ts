@@ -1,7 +1,8 @@
 import pLimit from "p-limit";
 import sqlite3 from "sqlite3";
 import { idGenerator } from "./id-generator";
-import { retry, workUnit } from "./work-unit";
+import { retry } from "./retry";
+import { workUnit } from "./work-unit";
 
 const main = async () => {
   const [, , arg1, arg2] = process.argv;
