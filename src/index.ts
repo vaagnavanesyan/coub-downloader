@@ -1,4 +1,3 @@
-import pLimit from "p-limit";
 import sqlite3 from "sqlite3";
 import { idGenerator } from "./id-generator";
 import { retry } from "./retry";
@@ -14,8 +13,6 @@ const main = async () => {
     db.run("CREATE TABLE IF NOT EXISTS pages (id TEXT, json TEXT, href TEXT, processed INTEGER)")
   );
 
-  const limit = pLimit(16);
-  const promises = [];
   const { continueFrom } = await new Promise((resolve) =>
     db.get("select max(id) continueFrom from pages", (err, res) => {
       resolve(res);
@@ -28,10 +25,8 @@ const main = async () => {
   const getId = idGenerator(start);
   for (let i = 0; i < end - start; i++) {
     const id = getId.next().value;
-    console.log(`preparing ${i} / ${end - start}...`);
-    limit(retry, () => workUnit(id, db, end - start), 2);
+    await retry(() => workUnit(id, db, end - start), 8);
   }
-  await Promise.all(promises);
 };
 
 main();
